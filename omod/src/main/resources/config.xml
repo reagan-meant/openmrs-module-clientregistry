@@ -32,10 +32,34 @@
 
   <!-- Required Global Properties -->
   <globalProperty>
-    <property>@MODULE_ID@.serverUrl</property>
-    <defaultValue>http://localhost:5001/CR/fhir/</defaultValue>
+    <property>@MODULE_ID@.clientRegistryServerUrl</property>
+    <defaultValue>http://localhost:5001/CR/fhir</defaultValue>
     <description>
       Base URL for the Client Registry Server
+    </description>
+  </globalProperty>
+
+  <globalProperty>
+    <property>@MODULE_ID@.fhirGetPatientEndpoint</property>
+    <defaultValue>Patient/$ihe-pix</defaultValue>
+    <description>
+      Client registry endpoint implementing the Patient identifier cross-reference transaction (ITI-83)
+    </description>
+  </globalProperty>
+
+  <globalProperty>
+    <property>@MODULE_ID@.defaultPatientIdentifierSystem</property>
+    <defaultValue></defaultValue>
+    <description>
+      Default system from which the Patient identifiers will be returned, if no system provided in requests
+    </description>
+  </globalProperty>
+
+  <globalProperty>
+    <property>@MODULE_ID@.transactionMethod</property>
+    <defaultValue>fhir</defaultValue>
+    <description>
+      Transaction method supported by the Client Registry. Currently supporting fhir or hl7.
     </description>
   </globalProperty>
 

@@ -111,7 +111,7 @@
             <dependency>
               <groupId>org.openmrs.tools</groupId>
               <artifactId>openmrs-tools</artifactId>
-              <version>${openmrsPlatformVersion}</version>
+              <version>${openmrsPlatformToolsVersion}</version>
             </dependency>
           </dependencies>
           <executions>
@@ -216,7 +216,8 @@
   </profiles>
 
   <properties>
-    <fhir2Version>1.5.1</fhir2Version>
+    <fhir2Version>1.8.0</fhir2Version>
     <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
+    <openmrsPlatformToolsVersion>2.4.0</openmrsPlatformToolsVersion>
   </properties>
 </project>
