@@ -4,6 +4,7 @@ import ca.uhn.fhir.model.valueset.BundleTypeEnum;
 import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.StringOrListParam;
+import ca.uhn.fhir.rest.param.TokenParam;
 import ca.uhn.fhir.rest.server.IResourceProvider;
 import ca.uhn.fhir.rest.server.exceptions.InvalidRequestException;
 import ca.uhn.fhir.rest.server.exceptions.NotImplementedOperationException;
@@ -45,18 +46,18 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 	
 	/**
 	 * FHIR endpoint to get Patient references from external client registry Example request: GET
-	 * [fhirbase]/Patient/$ihe-pix?sourceIdentifier=1234[&targetSystem=system1,system2]
+	 * [fhirbase
+	 * ]/Patient/$ihe-pix?sourceIdentifier=1234{|sourceSystem}[&targetSystem=system1,system2]
 	 * 
-	 * @param sourceIdentifierParam patient identifier
+	 * @param sourceIdentifierParam patient identifier token. If source system is included in token,
+	 *            we will use it to override the module defined source system.
 	 * @param targetSystemsParam (optional) Patient assigning authorities (ie systems) from which
-	 *            the returned identifiers shall be selected. Use module defined default if not
-	 *            provided.
-	 * @return OpenMRS Patient corresponding to identifier (TODO this might change to a list of
-	 *         identifier references returned by CR)
+	 *            the returned identifiers shall be selected
+	 * @return List of matching FHIR patients returned by the client registry
 	 */
 	@Operation(name = FhirCRConstants.IHE_PIX_OPERATION, idempotent=true, type = Patient.class, bundleType = BundleTypeEnum.SEARCHSET)
 	public List<Patient> getCRPatientById(
-			@OperationParam(name = FhirCRConstants.SOURCE_IDENTIFIER) StringParam sourceIdentifierParam,
+			@OperationParam(name = FhirCRConstants.SOURCE_IDENTIFIER) TokenParam sourceIdentifierParam,
 	        @OperationParam(name = FhirCRConstants.TARGET_SYSTEM) StringOrListParam targetSystemsParam
 	) {
 		
@@ -68,20 +69,16 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 				? Collections.emptyList()
 				: targetSystemsParam.getValuesAsQueryTokens().stream().filter(Objects::nonNull).map(StringParam::getValue).collect(Collectors.toList());
 
-		// If no targetSystem provided, use config defined default. Otherwise, take first targetSystem provided and
-		// include in sourceIdentifier token. Remaining targetSystems included in targetSystem param passed to CR
-		String sourceIdentifierSystem;
-		if (targetSystems.isEmpty()) {
-			sourceIdentifierSystem = config.getClientRegistryDefaultPatientIdentifierSystem();
-		} else {
-			sourceIdentifierSystem = targetSystems.get(0);
-			targetSystems.remove(0);
-		}
+		// If no sourceSystem provided, use config defined default
+		boolean userDefinedSourceSystem = sourceIdentifierParam.getSystem() != null && !sourceIdentifierParam.getSystem().isEmpty();
+		String sourceIdentifierSystem = userDefinedSourceSystem
+				? sourceIdentifierParam.getSystem()
+				: config.getClientRegistryDefaultPatientIdentifierSystem();
 
 		if (sourceIdentifierSystem == null || sourceIdentifierSystem.isEmpty()) {
-			throw new InvalidRequestException("ClientRegistry module does not have a default target system assigned " +
-					"via the defaultPatientIdentifierSystem property. At least one targetSystem must be provided in " +
-					"the request");
+			throw new InvalidRequestException("ClientRegistry module does not have a default source system assigned " +
+					"via the defaultPatientIdentifierSystem property. Source system must be provided as a token in " +
+					"the sourceIdentifier request param");
 		}
 
 		List<Patient> patients = clientRegistryManager.getPatientService().getCRPatient(

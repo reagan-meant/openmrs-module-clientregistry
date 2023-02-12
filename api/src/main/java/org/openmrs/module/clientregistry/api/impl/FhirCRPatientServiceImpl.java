@@ -24,13 +24,13 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 	
 	@Autowired
 	private ClientRegistryConfig config;
-
+	
 	/**
-	 * Constructs a $ihe-pix fhir client call to an external Client Registry returning any patients that match the given
-	 * identifier and target systems.
+	 * Constructs a $ihe-pix fhir client call to an external Client Registry returning any patients
+	 * that match the given source identifier/system and target systems.
 	 */
 	@Override
-	public List<Patient> getCRPatient(String sourceIdentifier, String sourceIdentifierSystem, List<String> extraTargetSystems) {
+	public List<Patient> getCRPatient(String sourceIdentifier, String sourceIdentifierSystem, List<String> targetSystems) {
 		// construct and send request to external client registry
 		IQuery<IBaseBundle> crRequest = fhirClient
 		        .search()
@@ -40,8 +40,8 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 		            FhirCRConstants.SOURCE_IDENTIFIER_PARAM.exactly().systemAndIdentifier(sourceIdentifierSystem,
 		                sourceIdentifier));
 		
-		if (!extraTargetSystems.isEmpty()) {
-			crRequest.and(FhirCRConstants.TARGET_SYSTEM_PARAM.matches().values(extraTargetSystems));
+		if (!targetSystems.isEmpty()) {
+			crRequest.and(FhirCRConstants.TARGET_SYSTEM_PARAM.matches().values(targetSystems));
 		}
 		
 		Bundle patientBundle = crRequest.returnBundle(Bundle.class).execute();
@@ -52,7 +52,7 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 	public List<Patient> searchCRForPatients(PatientSearchParams patientSearchParams) {
 		return null;
 	}
-
+	
 	/**
 	 * Filter and parse out fhir patients from Client Registry Patient Search results
 	 */
