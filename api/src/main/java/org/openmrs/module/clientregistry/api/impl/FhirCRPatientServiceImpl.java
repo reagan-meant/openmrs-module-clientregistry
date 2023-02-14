@@ -4,6 +4,7 @@ import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.gclient.IQuery;
 import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.openmrs.module.clientregistry.ClientRegistryConfig;
 import org.openmrs.module.clientregistry.api.CRPatientService;
@@ -30,7 +31,16 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 	 * that match the given source identifier/system and target systems.
 	 */
 	@Override
-	public List<Patient> getCRPatient(String sourceIdentifier, String sourceIdentifierSystem, List<String> targetSystems) {
+	public List<Patient> getCRPatients(String sourceIdentifier, String sourceIdentifierSystem, List<String> targetSystems) {
+
+
+		Parameters betterCrRequest = fhirClient
+				.operation()
+				.onInstance(String.format("%s|%s", sourceIdentifierSystem, sourceIdentifier))
+				.named(FhirCRConstants.IHE_PIX_OPERATION)
+				.withNoParameters(Parameters.class)
+				.execute();
+
 		// construct and send request to external client registry
 		IQuery<IBaseBundle> crRequest = fhirClient
 		        .search()
@@ -39,7 +49,7 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 		        .where(
 		            FhirCRConstants.SOURCE_IDENTIFIER_PARAM.exactly().systemAndIdentifier(sourceIdentifierSystem,
 		                sourceIdentifier));
-		
+
 		if (!targetSystems.isEmpty()) {
 			crRequest.and(FhirCRConstants.TARGET_SYSTEM_PARAM.matches().values(targetSystems));
 		}

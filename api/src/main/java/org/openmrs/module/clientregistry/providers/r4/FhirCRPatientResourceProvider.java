@@ -47,7 +47,7 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 	/**
 	 * FHIR endpoint to get Patient references from external client registry Example request: GET
 	 * [fhirbase
-	 * ]/Patient/$ihe-pix?sourceIdentifier=1234{|sourceSystem}[&targetSystem=system1,system2]
+	 * ]/Patient/$ihe-pix?sourceIdentifier={sourceSystem|}1234[&targetSystem=system1,system2]
 	 * 
 	 * @param sourceIdentifierParam patient identifier token. If source system is included in token,
 	 *            we will use it to override the module defined source system.
@@ -81,7 +81,7 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 					"the sourceIdentifier request param");
 		}
 
-		List<Patient> patients = clientRegistryManager.getPatientService().getCRPatient(
+		List<Patient> patients = clientRegistryManager.getPatientService().getCRPatients(
 				sourceIdentifierParam.getValue(), sourceIdentifierSystem, targetSystems
 		);
 
