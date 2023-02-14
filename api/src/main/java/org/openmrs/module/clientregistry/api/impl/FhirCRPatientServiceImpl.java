@@ -36,7 +36,7 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 
 		Parameters betterCrRequest = fhirClient
 				.operation()
-				.onInstance(String.format("%s|%s", sourceIdentifierSystem, sourceIdentifier))
+				.onType(FhirConstants.PATIENT)
 				.named(FhirCRConstants.IHE_PIX_OPERATION)
 				.withNoParameters(Parameters.class)
 				.execute();
