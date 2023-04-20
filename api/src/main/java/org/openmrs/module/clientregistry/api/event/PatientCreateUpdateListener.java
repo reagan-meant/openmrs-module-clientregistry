@@ -18,6 +18,7 @@ import org.openmrs.module.clientregistry.ClientRegistryConfig;
 import org.openmrs.module.clientregistry.ClientRegistryConstants;
 import org.openmrs.module.fhir2.api.FhirPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,6 +35,7 @@ public class PatientCreateUpdateListener implements EventListener {
 	private ClientRegistryConfig config;
 	
 	@Autowired
+	@Qualifier("clientRegistryFhirClient")
 	private IGenericClient client;
 	
 	public DaemonToken getDaemonToken() {
