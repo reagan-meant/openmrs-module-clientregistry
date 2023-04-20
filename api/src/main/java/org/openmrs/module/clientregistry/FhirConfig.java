@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
+@Configuration("clientRegistryFhirConfig")
 public class FhirConfig {
 	
 	@Autowired
@@ -18,7 +18,7 @@ public class FhirConfig {
 	@Qualifier("fhirR4")
 	private FhirContext fhirContext;
 	
-	@Bean
+	@Bean(name = "clientRegistryFhirClient")
 	public IGenericClient getFhirClient() throws Exception {
 		IGenericClient fhirClient = fhirContext.newRestfulGenericClient(config.getClientRegistryServerUrl());
 		if (!config.getClientRegistryUserName().isEmpty()) {
