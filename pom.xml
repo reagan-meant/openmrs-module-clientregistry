@@ -10,7 +10,7 @@
 
   <groupId>org.openmrs.module</groupId>
   <artifactId>clientregistry</artifactId>
-  <version>${revision}</version>
+  <version>1.1.7</version>
   <packaging>pom</packaging>
   <name>Client Registry</name>
   <description>A Client Registry module to enable FHIR resource communication between OpenMRS and a Client Registry, as well
@@ -216,7 +216,6 @@
   </profiles>
 
   <properties>
-    <revision>1.1.5</revision>
     <fhir2Version>1.5.1</fhir2Version>
     <openmrsPlatformVersion>1.11.6</openmrsPlatformVersion>
   </properties>
