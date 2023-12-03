@@ -12,6 +12,7 @@ import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.AdministrationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,30 +20,42 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ClientRegistryConfig {
-	
+
 	public final static String MODULE_PRIVILEGE = "Client Registry Privilege";
-	
+
 	@Autowired
 	@Qualifier("adminService")
 	AdministrationService administrationService;
-	
+
+	@Value("${clientregistry.serverUrl}")
+	private String serverUrl;
+
+	@Value("${clientregistry.username}")
+	private String username;
+
+	@Value("${clientregistry.password}")
+	private String password;
+
+	@Value("${clientregistry.identifierRoot}")
+	private String identifierRoot;
+
 	public boolean clientRegistryConnectionEnabled() {
 		return StringUtils.isNotBlank(getClientRegistryServerUrl());
 	}
-	
+
 	public String getClientRegistryServerUrl() {
-		return administrationService.getGlobalProperty(ClientRegistryConstants.GP_CLIENT_REGISTRY_SERVER_URL);
+		return serverUrl;
 	}
-	
+
 	public String getClientRegistryUserName() {
-		return administrationService.getGlobalProperty(ClientRegistryConstants.GP_CLIENT_REGISTRY_USER_NAME);
+		return username;
 	}
-	
+
 	public String getClientRegistryPassword() {
-		return administrationService.getGlobalProperty(ClientRegistryConstants.GP_CLIENT_REGISTRY_PASSWORD);
+		return password;
 	}
-	
+
 	public String getClientRegistryIdentifierRoot() {
-		return administrationService.getGlobalProperty(ClientRegistryConstants.GP_CLIENT_REGISTRY_IDENTIFIER_ROOT);
+		return identifierRoot;
 	}
 }
