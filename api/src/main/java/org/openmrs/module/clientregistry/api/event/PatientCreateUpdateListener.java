@@ -5,6 +5,7 @@ import javax.jms.MapMessage;
 import javax.jms.Message;
 
 import ca.uhn.fhir.rest.client.api.IGenericClient;
+import ca.uhn.fhir.rest.client.exceptions.FhirClientConnectionException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -20,6 +21,7 @@ import org.openmrs.module.fhir2.api.FhirPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import ca.uhn.fhir.parser.DataFormatException;
 
 @Component
 public class PatientCreateUpdateListener implements EventListener {
@@ -98,7 +100,18 @@ public class PatientCreateUpdateListener implements EventListener {
 			if (mapMessage.getJMSDestination().toString().equals(ClientRegistryConstants.UPDATE_MESSAGE_DESTINATION)) {
 				client.update().resource(patient).execute();
 			} else {
-				client.create().resource(patient).execute();
+				try {
+					client.create().resource(patient).execute();
+				}
+				catch (FhirClientConnectionException e) {
+					Throwable cause = e.getCause();
+					if (cause instanceof DataFormatException) {
+						// just warn if the CR responds with unsupported data format
+						log.warn(e.getMessage());
+					} else {
+						throw e;
+					}
+				}
 			}
 		}
 	}
