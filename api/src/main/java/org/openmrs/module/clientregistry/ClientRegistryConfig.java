@@ -10,6 +10,7 @@ package org.openmrs.module.clientregistry;
 
 import org.apache.commons.lang.StringUtils;
 import org.openmrs.api.AdministrationService;
+import org.openmrs.module.clientregistry.providers.FhirCRConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -46,7 +47,21 @@ public class ClientRegistryConfig {
 	public String getClientRegistryServerUrl() {
 		return serverUrl;
 	}
-
+	
+	public String getClientRegistryGetPatientEndpoint() {
+		String globalPropPatientEndpoint = administrationService
+		        .getGlobalProperty(ClientRegistryConstants.GP_FHIR_CLIENT_REGISTRY_GET_PATIENT_ENDPOINT);
+		
+		// default to Patient/$ihe-pix if patient endpoint is not defined in config
+		return (globalPropPatientEndpoint == null || globalPropPatientEndpoint.isEmpty()) ? String.format("Patient/%s",
+		    FhirCRConstants.IHE_PIX_OPERATION) : globalPropPatientEndpoint;
+	}
+	
+	public String getClientRegistryDefaultPatientIdentifierSystem() {
+		return administrationService
+		        .getGlobalProperty(ClientRegistryConstants.GP_CLIENT_REGISTRY_DEFAULT_PATIENT_IDENTIFIER_SYSTEM);
+	}
+	
 	public String getClientRegistryUserName() {
 		return username;
 	}
@@ -57,5 +72,9 @@ public class ClientRegistryConfig {
 
 	public String getClientRegistryIdentifierRoot() {
 		return identifierRoot;
+	}
+	
+	public String getClientRegistryTransactionMethod() {
+		return administrationService.getGlobalProperty(ClientRegistryConstants.GP_CLIENT_REGISTRY_TRANSACTION_METHOD);
 	}
 }
