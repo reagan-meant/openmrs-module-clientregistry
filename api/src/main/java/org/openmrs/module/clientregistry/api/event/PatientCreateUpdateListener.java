@@ -12,7 +12,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.r4.model.ContactPoint;
+import org.hl7.fhir.r4.model.Extension;
+import org.openmrs.PersonAttribute;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.context.Daemon;
 import org.openmrs.event.EventListener;
 import org.openmrs.module.DaemonToken;
@@ -89,7 +93,7 @@ public class PatientCreateUpdateListener implements EventListener {
 			Patient patient;
 			patient = patientService.get(uuid);
 			patient.getNameFirstRep().setUse(HumanName.NameUse.OFFICIAL);
-
+			
 			for (ContactPoint contactPoint : patient.getTelecom()) {
 				contactPoint.setSystem(ContactPoint.ContactPointSystem.PHONE);
 				contactPoint.setUse(ContactPoint.ContactPointUse.MOBILE);
@@ -101,6 +105,27 @@ public class PatientCreateUpdateListener implements EventListener {
 			patient.addIdentifier(openmrsUniqueId);
 			
 			patient.setId(openmrsUniqueId.getValue());
+			
+			
+			//Configure via GP
+			String uuidAndExtensionString = "f1c8c615-1c73-4976-8218-a74ca67e22bb|patient_status,11e3f71d-c4b2-4b4b-a26b-59e43f2d5347|patient_status_date";			
+			String[] uuidAndExtensionPairs = uuidAndExtensionString.split(",");
+			
+			for (String pair : uuidAndExtensionPairs) {
+				String[] uuidAndExtension = pair.trim().split("\\|");
+				if (uuidAndExtension.length == 2) {
+					String extuuid = uuidAndExtension[0].trim();
+					String extensionUrl = uuidAndExtension[1].trim();					
+					Extension extension = new Extension().setUrl(extensionUrl);					
+					for (PersonAttribute attribute : Context.getPersonService().getPersonByUuid(uuid).getActiveAttributes()) {
+						if (attribute.getAttributeType().getUuid().equals(extuuid)) {
+							extension.setValue(new StringType(attribute.toString()));
+							break;
+						}
+					}					
+					patient.addExtension(extension);
+				}
+			}
 			
 			if (mapMessage.getJMSDestination().toString().equals(ClientRegistryConstants.UPDATE_MESSAGE_DESTINATION)) {
 				client.update().resource(patient).execute();
