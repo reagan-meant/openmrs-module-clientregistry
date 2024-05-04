@@ -28,16 +28,16 @@ public class ClientRegistryConfig {
 	@Qualifier("adminService")
 	AdministrationService administrationService;
 
-	@Value("${clientregistry.serverUrl}")
+	@Value("${CLIENTREGISTRY_SERVERURL}")
 	private String serverUrl;
 
-	@Value("${clientregistry.username}")
+	@Value("${CLIENTREGISTRY_USERNAME}")
 	private String username;
 
-	@Value("${clientregistry.password}")
+	@Value("${CLIENTREGISTRY_PASSWORD}")
 	private String password;
 
-	@Value("${clientregistry.identifierRoot}")
+	@Value("${CLIENTREGISTRY_IDENTIFIERROOT}")
 	private String identifierRoot;
 
 	public boolean clientRegistryConnectionEnabled() {

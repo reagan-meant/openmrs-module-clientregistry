@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.ContactPoint;
 import org.openmrs.api.context.Daemon;
 import org.openmrs.event.EventListener;
 import org.openmrs.module.DaemonToken;
@@ -88,7 +89,11 @@ public class PatientCreateUpdateListener implements EventListener {
 			Patient patient;
 			patient = patientService.get(uuid);
 			patient.getNameFirstRep().setUse(HumanName.NameUse.OFFICIAL);
-			
+
+			for (ContactPoint contactPoint : patient.getTelecom()) {
+				contactPoint.setSystem(ContactPoint.ContactPointSystem.PHONE);
+				contactPoint.setUse(ContactPoint.ContactPointUse.MOBILE);
+			}
 			Identifier openmrsUniqueId = new Identifier()
 			        .setSystem(ClientRegistryConstants.CLIENT_REGISTRY_INTERNAL_ID_SYSTEM)
 			        .setValue(String.format("%s/%s", config.getClientRegistryIdentifierRoot(), uuid))
