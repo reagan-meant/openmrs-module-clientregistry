@@ -17,6 +17,7 @@ import org.openmrs.module.fhir2.FhirConstants;
 import org.openmrs.module.fhir2.api.search.param.PatientSearchParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,10 +28,9 @@ import java.util.stream.Collectors;
 public class FhirCRPatientServiceImpl implements CRPatientService {
 	
 	@Autowired
+	@Qualifier("clientRegistryFhirClient")
 	private IGenericClient fhirClient;
 	
-	@Autowired
-	private ClientRegistryConfig config;
 	
 	/**
 	 * Get patient identifiers from an external client registry's $ihe-pix implementation. Use the

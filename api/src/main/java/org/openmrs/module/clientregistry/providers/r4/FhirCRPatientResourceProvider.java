@@ -14,11 +14,12 @@ import org.hl7.fhir.instance.model.api.IBaseResource;
 import org.hl7.fhir.r4.model.Patient;
 import ca.uhn.fhir.rest.annotation.Operation;
 import ca.uhn.fhir.rest.annotation.OperationParam;
+
+import org.openmrs.api.context.Context;
 import org.openmrs.module.clientregistry.ClientRegistryConfig;
 import org.openmrs.module.clientregistry.api.ClientRegistryManager;
 import org.openmrs.module.clientregistry.providers.FhirCRConstants;
 import org.openmrs.module.fhir2.api.annotations.R4Provider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -32,12 +33,6 @@ import static lombok.AccessLevel.PACKAGE;
 @R4Provider
 @Setter(PACKAGE)
 public class FhirCRPatientResourceProvider implements IResourceProvider {
-	
-	@Autowired
-	private ClientRegistryManager clientRegistryManager;
-	
-	@Autowired
-	private ClientRegistryConfig config;
 	
 	@Override
 	public Class<? extends IBaseResource> getResourceType() {
@@ -60,7 +55,11 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 			@OperationParam(name = FhirCRConstants.SOURCE_IDENTIFIER) TokenParam sourceIdentifierParam,
 	        @OperationParam(name = FhirCRConstants.TARGET_SYSTEM) StringOrListParam targetSystemsParam
 	) {
-		
+		ClientRegistryManager clientRegistryManager = Context.getRegisteredComponent("clientRegistryManager",
+	    ClientRegistryManager.class);
+	
+		ClientRegistryConfig config = Context.getRegisteredComponent("clientRegistryFhirClient",
+	    ClientRegistryConfig.class);
 		if (sourceIdentifierParam == null || sourceIdentifierParam.getValue() == null) {
 			throw new InvalidRequestException("sourceIdentifier must be specified");
 		}

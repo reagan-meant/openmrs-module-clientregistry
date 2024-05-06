@@ -1,5 +1,7 @@
 package org.openmrs.module.clientregistry.api.event;
 
+import java.util.Optional;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -12,6 +14,11 @@ import org.apache.commons.logging.LogFactory;
 import org.hl7.fhir.r4.model.HumanName;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.StringType;
+import org.hl7.fhir.r4.model.ContactPoint;
+import org.hl7.fhir.r4.model.Extension;
+import org.openmrs.PersonAttribute;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.context.Daemon;
 import org.openmrs.event.EventListener;
 import org.openmrs.module.DaemonToken;
@@ -89,6 +96,10 @@ public class PatientCreateUpdateListener implements EventListener {
 			patient = patientService.get(uuid);
 			patient.getNameFirstRep().setUse(HumanName.NameUse.OFFICIAL);
 			
+			for (ContactPoint contactPoint : patient.getTelecom()) {
+				contactPoint.setSystem(ContactPoint.ContactPointSystem.PHONE);
+				contactPoint.setUse(ContactPoint.ContactPointUse.MOBILE);
+			}
 			Identifier openmrsUniqueId = new Identifier()
 			        .setSystem(ClientRegistryConstants.CLIENT_REGISTRY_INTERNAL_ID_SYSTEM)
 			        .setValue(String.format("%s/%s", config.getClientRegistryIdentifierRoot(), uuid))
@@ -96,6 +107,27 @@ public class PatientCreateUpdateListener implements EventListener {
 			patient.addIdentifier(openmrsUniqueId);
 			
 			patient.setId(openmrsUniqueId.getValue());
+			
+			
+			String uuidAndExtensionString = Context.getAdministrationService().getGlobalProperty(ClientRegistryConstants.GP_EXTENSION_UUID_EXTENSION_URLS);
+			String[] uuidAndExtensionPairs = Optional.ofNullable(uuidAndExtensionString)
+                                                    .map(s -> s.split(","))
+                                                    .orElse(new String[0]);
+			for (String pair : uuidAndExtensionPairs) {
+				String[] uuidAndExtension = pair.trim().split("\\|");
+				if (uuidAndExtension.length == 2) {
+					String extuuid = uuidAndExtension[0].trim();
+					String extensionUrl = uuidAndExtension[1].trim();					
+					Extension extension = new Extension().setUrl(extensionUrl);					
+					for (PersonAttribute attribute : Context.getPersonService().getPersonByUuid(uuid).getActiveAttributes()) {
+						if (attribute.getAttributeType().getUuid().equals(extuuid)) {
+							extension.setValue(new StringType(attribute.toString()));
+							break;
+						}
+					}					
+					patient.addExtension(extension);
+				}
+			}
 			
 			if (mapMessage.getJMSDestination().toString().equals(ClientRegistryConstants.UPDATE_MESSAGE_DESTINATION)) {
 				client.update().resource(patient).execute();
@@ -115,5 +147,4 @@ public class PatientCreateUpdateListener implements EventListener {
 			}
 		}
 	}
-	
 }
