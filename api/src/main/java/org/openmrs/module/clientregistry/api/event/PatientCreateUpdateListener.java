@@ -1,5 +1,7 @@
 package org.openmrs.module.clientregistry.api.event;
 
+import java.util.Optional;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -107,10 +109,10 @@ public class PatientCreateUpdateListener implements EventListener {
 			patient.setId(openmrsUniqueId.getValue());
 			
 			
-			//Configure via GP
-			String uuidAndExtensionString = "f1c8c615-1c73-4976-8218-a74ca67e22bb|patient_status,11e3f71d-c4b2-4b4b-a26b-59e43f2d5347|patient_status_date";			
-			String[] uuidAndExtensionPairs = uuidAndExtensionString.split(",");
-			
+			String uuidAndExtensionString = Context.getAdministrationService().getGlobalProperty(ClientRegistryConstants.GP_EXTENSION_UUID_EXTENSION_URLS);
+			String[] uuidAndExtensionPairs = Optional.ofNullable(uuidAndExtensionString)
+                                                    .map(s -> s.split(","))
+                                                    .orElse(new String[0]);
 			for (String pair : uuidAndExtensionPairs) {
 				String[] uuidAndExtension = pair.trim().split("\\|");
 				if (uuidAndExtension.length == 2) {
@@ -145,5 +147,4 @@ public class PatientCreateUpdateListener implements EventListener {
 			}
 		}
 	}
-	
 }

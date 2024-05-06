@@ -87,6 +87,13 @@
     </description>
   </globalProperty>
 
+  <globalProperty>
+    <property>@MODULE_ID@.uuidAndExtensionURL</property>
+    <defaultValue></defaultValue>
+    <description>
+      UUIDs of person attributes that are to be mapped to the fhir extension url like "50fada9c-6d6f-4575-bda6-448a719da919|http://hl7.org/fhir/StructureDefinition/patient-mothersMaidenName,4a4f9e2d-59de-45d2-92f4-015bc388b832|http://hl7.org/fhir/StructureDefinition/patient-sistersName"
+    </description>
+  </globalProperty>
 
   <!-- Internationalization -->
   <!-- All message codes should start with @MODULE_ID@.* -->

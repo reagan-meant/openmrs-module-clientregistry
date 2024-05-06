@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -32,8 +31,6 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 	@Qualifier("clientRegistryFhirClient")
 	private IGenericClient fhirClient;
 	
-	@Autowired
-	private ClientRegistryConfig config;
 	
 	/**
 	 * Get patient identifiers from an external client registry's $ihe-pix implementation. Use the
