@@ -32,6 +32,6 @@ simply restart OpenMRS/tomcat and the module will be loaded and started.
 
 Set variable below via docker env file or runtime properties file
 CLIENTREGISTRY_SERVERURL=https://localhost/openhimcore/CR/fhir
-CLIENTREGISTRY_USERNAME=sigdep3
-CLIENTREGISTRY_PASSWORD=sigdep3
+CLIENTREGISTRY_USERNAME=admin
+CLIENTREGISTRY_PASSWORD=Admin123
 CLIENTREGISTRY_IDENTIFIERROOT=http://clientregistry.org/openmrs
