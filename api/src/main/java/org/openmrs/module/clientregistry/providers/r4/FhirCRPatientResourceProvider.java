@@ -1,7 +1,6 @@
 package org.openmrs.module.clientregistry.providers.r4;
 
 import ca.uhn.fhir.model.valueset.BundleTypeEnum;
-import ca.uhn.fhir.rest.annotation.Search;
 import ca.uhn.fhir.rest.param.StringParam;
 import ca.uhn.fhir.rest.param.StringOrListParam;
 import ca.uhn.fhir.rest.param.TokenParam;
@@ -91,7 +90,6 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 		return patients;
 	}
 	
-
 	@Operation(name = "$search", idempotent = true)
 	public List<Patient> searchClientRegistryPatients() {
 		throw new NotImplementedOperationException("search client registry is not yet implemented");
