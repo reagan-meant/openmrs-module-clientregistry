@@ -31,7 +31,6 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 	@Qualifier("clientRegistryFhirClient")
 	private IGenericClient fhirClient;
 	
-	
 	/**
 	 * Get patient identifiers from an external client registry's $ihe-pix implementation. Use the
 	 * returned identifiers to then request a matching Patient bundle from the client registry.
