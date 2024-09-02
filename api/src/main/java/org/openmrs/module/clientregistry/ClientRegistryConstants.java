@@ -21,4 +21,11 @@ public class ClientRegistryConstants {
 	public static final String GP_CLIENT_REGISTRY_TRANSACTION_METHOD = "clientregistry.transactionMethod";
 	
 	public static final String UPDATE_MESSAGE_DESTINATION = "topic://UPDATED:org.openmrs.Patient";
+	
+	public static final String CR_FHIR_OPERATION = "$cr";
+	
+	public static final String CR_FHIR_SEARCH_OPERATION = "$cr-search";
+	
+	public static final String CR_FHIR_DELETE_OPERATION = "$cr-delete";
+	
 }
