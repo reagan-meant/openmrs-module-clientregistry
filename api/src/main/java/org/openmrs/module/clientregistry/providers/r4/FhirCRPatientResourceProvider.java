@@ -61,16 +61,24 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 		return patient;
 	}
 	
-	@Operation(name = ClientRegistryConstants.CR_FHIR_OPERATION, idempotent = false)
-	public MethodOutcome createOrUpdatePatient(@ResourceParam Patient patient) {
-		Patient savedPatient = crService.createOrUpdatePatient(patient);
-		if (patient.hasId()) {
-			return FhirProviderUtils.buildUpdate(savedPatient);
-		}
-		return FhirProviderUtils.buildCreate(savedPatient);
+	@Operation(name = ClientRegistryConstants.CR_FHIR_OPERATION)
+	public MethodOutcome createPatient(@ResourceParam Patient patient) {
+		Patient createdPatient = crService.createPatient(patient);
+		System.out.println("Created" + createdPatient);
+		return FhirProviderUtils.buildCreate(createdPatient);
 	}
 	
-	@Operation(name = ClientRegistryConstants.CR_FHIR_DELETE_OPERATION, idempotent = false)
+	@Operation(name = ClientRegistryConstants.CR_FHIR_UPDATE_OPERATION)
+	public MethodOutcome updatePatient(@IdParam @Nonnull IdType id, @ResourceParam @Nonnull Patient patient) {
+		if (id == null || id.getIdPart() == null) {
+			throw new InvalidRequestException("id must be specified to update");
+		}
+		patient.setId(id.getIdPart());
+		Patient updatedPatient = crService.updatePatient(patient);
+		return FhirProviderUtils.buildUpdate(updatedPatient);
+	}
+	
+	@Operation(name = ClientRegistryConstants.CR_FHIR_DELETE_OPERATION)
 	public OperationOutcome deletePatient(@ResourceParam Patient patient) {
 		crService.purgePatient(patient);
 		return FhirProviderUtils.buildDeleteR4();

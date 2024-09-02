@@ -8,7 +8,7 @@ import java.util.List;
 public interface CRPatientService {
 	
 	/**
-	 * Queries patient by logical ID
+	 * Queries patient by ID
 	 */
 	Patient getPatientById(String id);
 	
@@ -31,12 +31,20 @@ public interface CRPatientService {
 	IBundleProvider searchPatients(PatientSearchParams patientSearchParams);
 	
 	/**
-	 * Creates or updates a patient record.
+	 * Creates a patient record
 	 * 
-	 * @param patient the patient to create or update
-	 * @return the created or updated patient
+	 * @param patient the patient to create
+	 * @return the created patient
 	 */
-	Patient createOrUpdatePatient(Patient patient);
+	Patient createPatient(Patient patient);
+	
+	/**
+	 * Updates a patient record.
+	 * 
+	 * @param patient the patient to update
+	 * @return the updated patient
+	 */
+	Patient updatePatient(Patient patient);
 	
 	/**
 	 * Purges a patient record from the registry.

@@ -52,9 +52,8 @@ public class ClientRegistryConfig {
 		        .getGlobalProperty(ClientRegistryConstants.GP_FHIR_CLIENT_REGISTRY_GET_PATIENT_ENDPOINT);
 		
 		// default to Patient/$ihe-pix if patient endpoint is not defined in config
-		return (globalPropPatientEndpoint == null || globalPropPatientEndpoint.isEmpty())
-		        ? String.format("Patient/%s", FhirCRConstants.IHE_PIX_OPERATION)
-		        : globalPropPatientEndpoint;
+		return (globalPropPatientEndpoint == null || globalPropPatientEndpoint.isEmpty()) ? String.format("Patient/%s",
+		    FhirCRConstants.IHE_PIX_OPERATION) : globalPropPatientEndpoint;
 	}
 	
 	public String getClientRegistryDefaultPatientIdentifierSystem() {

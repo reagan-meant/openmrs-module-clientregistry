@@ -26,6 +26,8 @@ public class ClientRegistryConstants {
 	
 	public static final String CR_FHIR_SEARCH_OPERATION = "$cr-search";
 	
+	public static final String CR_FHIR_UPDATE_OPERATION = "$cr-update";
+	
 	public static final String CR_FHIR_DELETE_OPERATION = "$cr-delete";
 	
 }

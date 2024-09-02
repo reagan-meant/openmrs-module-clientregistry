@@ -95,12 +95,13 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 	}
 	
 	@Override
-	public Patient createOrUpdatePatient(Patient patient) {
-		if (patient.hasId()) {
-			return (Patient) fhirClient.update().resource(patient).execute().getResource();
-		} else {
-			return (Patient) fhirClient.create().resource(patient).execute().getResource();
-		}
+	public Patient createPatient(Patient patient) {
+		return (Patient) fhirClient.create().resource(patient).execute().getResource();
+	}
+	
+	@Override
+	public Patient updatePatient(Patient patient) {
+		return (Patient) fhirClient.update().resource(patient).execute().getResource();
 	}
 	
 	@Override
