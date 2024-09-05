@@ -64,7 +64,6 @@ public class FhirCRPatientResourceProvider implements IResourceProvider {
 	@Operation(name = ClientRegistryConstants.CR_FHIR_OPERATION)
 	public MethodOutcome createPatient(@ResourceParam Patient patient) {
 		Patient createdPatient = crService.createPatient(patient);
-		System.out.println("Created" + createdPatient);
 		return FhirProviderUtils.buildCreate(createdPatient);
 	}
 	
