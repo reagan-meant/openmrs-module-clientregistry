@@ -49,19 +49,18 @@ public class PatientSearchCriteriaBuilder {
             List<PropParam<?>> params = entry.getValue();
             switch (entry.getKey()) {
                 case FhirConstants.NAME_SEARCH_HANDLER:
-                    return processParamsEntry(params, param -> handleStringParam(param));
+                case FhirConstants.ADDRESS_SEARCH_HANDLER:
+                    return processParamsEntry(params, this::handleStringParam);
                 case FhirConstants.IDENTIFIER_SEARCH_HANDLER:
-                    return processParamsEntry(params, param -> handleIdentifierParam(param));
+                    return processParamsEntry(params, this::handleIdentifierParam);
                 case FhirConstants.GENDER_SEARCH_HANDLER:
                     return processParamsEntry(params, param -> handleTokenParam(param, null));
                 case FhirConstants.DATE_RANGE_SEARCH_HANDLER:
-                    return processParamsEntry(params, param -> handleDateParam(param));
+                    return processParamsEntry(params, this::handleDateParam);
                 case FhirConstants.BOOLEAN_SEARCH_HANDLER:
                     return processParamsEntry(params, param -> handleTokenParam(param, "deceased"));
-                case FhirConstants.ADDRESS_SEARCH_HANDLER:
-                    return processParamsEntry(params, param -> handleStringParam(param));
                 case FhirConstants.COMMON_SEARCH_HANDLER:
-                    return processParamsEntry(params, param -> handleCommonProps(param));
+                    return processParamsEntry(params, this::handleCommonProps);
                 default:
                     return Arrays.asList(Optional.<ICriterion<?>> empty());
             }
@@ -70,7 +69,7 @@ public class PatientSearchCriteriaBuilder {
 	
 	private List<Optional<ICriterion<?>>> processParamsEntry(List<PropParam<?>> params,
             Function<PropParam<?>, List<Optional<ICriterion<?>>>> handler) {
-        return params.stream().map(param -> handler.apply(param)).flatMap(Collection::stream).collect(Collectors.toList());
+        return params.stream().map(handler).flatMap(Collection::stream).collect(Collectors.toList());
     }
 	
 	/**
