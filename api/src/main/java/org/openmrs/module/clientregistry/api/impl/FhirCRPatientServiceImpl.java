@@ -61,9 +61,8 @@ public class FhirCRPatientServiceImpl implements CRPatientService {
 		}
 		
 		Parameters crMatchingParams = identifiersRequest.useHttpGet().execute();
-		List<String> crIdentifiers = crMatchingParams.getParameter().stream()
-		        .filter(param -> Objects.equals(param.getName(), "targetId")).map(param -> param.getValue().toString())
-		        .collect(Collectors.toList());
+		List<String> crIdentifiers = crMatchingParams.getParameter().stream().filter(param -> Objects.equals(param.getName(), "targetId"))
+				.map(param -> ((Reference) param.getValue()).getReference()).collect(Collectors.toList());
 		
 		if (crIdentifiers.isEmpty()) {
 			return new CRSearchBundleProvider(Collections.emptyList(), globalPropertyService);
