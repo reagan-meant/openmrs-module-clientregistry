@@ -4,7 +4,6 @@ import ca.uhn.fhir.model.api.annotation.SearchParamDefinition;
 import ca.uhn.fhir.rest.gclient.StringClientParam;
 import ca.uhn.fhir.rest.gclient.TokenClientParam;
 import ca.uhn.fhir.rest.gclient.UriClientParam;
-import ca.uhn.fhir.rest.param.StringOrListParam;
 
 public class FhirCRConstants {
 	
