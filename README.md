@@ -1,37 +1,69 @@
-openmrs-module-clientregistry
-==========================
+# OpenMRS Client Registry Module
 
-Description
------------
-A module that enables OpenMRS to communicate with a FHIR-based Client Registry for patient search and registration.
+## Overview
+The **OpenMRS Client Registry Module** enables integration with a FHIR-based Client Registry to facilitate patient search and registration. This module allows OpenMRS to communicate with external Client Registries that support the FHIR (Fast Healthcare Interoperability Resources) standard.
 
-Building from Source
---------------------
-You will need to have Java 1.8+ and Maven 2.x+ installed. Use the command 'mvn package' to
-compile and package the module. The .omod file will be in the omod/target folder.
+---
 
-Alternatively you can add the snippet provided in the [Creating Modules](https://wiki.openmrs.org/x/cAEr) page to your
-omod/pom.xml and use the mvn command:
+## Prerequisites
 
-    mvn package -P deploy-web -D deploy.path="../../openmrs-1.8.x/webapp/src/main/webapp"
+- **Java** 1.8 or higher
+- **Maven** 2.x or higher
 
-It will allow you to deploy any changes to your web
-resources such as jsp or js files without re-installing the module. The deploy path says
-where OpenMRS is deployed.
+Ensure these dependencies are installed before building the module.
 
-Installation
-------------
+---
 
-1. Build the module to produce the .omod file.
-2. Use the OpenMRS Administration > Manage Modules screen to upload and install the .omod file.
+## Building from Source
 
-If uploads are not allowed from the web (changable via a runtime property), you can drop the omod
-into the ~/.OpenMRS/modules folder.  (Where ~/.OpenMRS is assumed to be the Application
-Data Directory that the running openmrs is currently using.)  After putting the file in there
-simply restart OpenMRS/tomcat and the module will be loaded and started.
+1. Clone or download the repository to your local machine.
+2. Navigate to the module's root directory in the terminal.
+3. Run the following Maven command to compile and package the module:
 
-Set variable below via docker env file or runtime properties file
-CLIENTREGISTRY_SERVERURL=https://localhost/openhimcore/CR/fhir
-CLIENTREGISTRY_USERNAME=admin
-CLIENTREGISTRY_PASSWORD=Admin123
-CLIENTREGISTRY_IDENTIFIERROOT=http://clientregistry.org/openmrs
+    ```bash
+    mvn package
+    ```
+
+This will generate the `.omod` file in the `omod/target/` directory.
+
+---
+
+## Installation
+
+Once you have built the `.omod` file, follow these steps to install the module into OpenMRS:
+
+### Option 1: Using the OpenMRS Admin Interface
+
+1. Go to **Administration > Manage Modules** in the OpenMRS Admin UI.
+2. Upload the generated `.omod` file and click **Install**.
+
+### Option 2: Manual Installation
+
+If the web upload method is disabled, you can manually drop the `.omod` file into your OpenMRS modules directory:
+
+1. Copy the `.omod` file to the `~/.OpenMRS/modules/` directory on the server where OpenMRS is installed.
+   
+   > Note: `~/.OpenMRS` is the application data directory used by OpenMRS. The exact location of this directory depends on your installation.
+
+2. Restart OpenMRS or Tomcat to load and activate the module.
+
+---
+
+## Configuration
+
+Before using the module, configure the necessary variables. You can set them via the **Docker environment file** or the **OpenMRS runtime properties** file.
+
+Below are the configuration settings that must be defined:
+
+- `CLIENTREGISTRY_SERVERURL`: The base URL of the FHIR-based Client Registry. For example: `https://hapi.fhir.org/baseR4/`
+- `CLIENTREGISTRY_USERNAME`: The username to authenticate to the Client Registry. Example: `admin`
+- `CLIENTREGISTRY_PASSWORD`: The password to authenticate to the Client Registry. Example: `Admin123`
+- `CLIENTREGISTRY_IDENTIFIERROOT`: The identifier root for the client registry. Example: `http://clientregistry.org/openmrs`
+
+Example configuration:
+
+```yaml
+CLIENTREGISTRY_SERVERURL: "https://hapi.fhir.org/baseR4/"
+CLIENTREGISTRY_USERNAME: "admin"
+CLIENTREGISTRY_PASSWORD: "Admin123"
+CLIENTREGISTRY_IDENTIFIERROOT: "http://clientregistry.org/openmrs"
